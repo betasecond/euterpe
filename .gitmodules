@@ -1,0 +1,6 @@
+[submodule "lib/BeatovenDemo"]
+	path = lib/BeatovenDemo
+	url = https://github.com/betasecond/BeatovenDemo.git
+[submodule "lib/KlingDemo"]
+	path = lib/KlingDemo
+	url = https://github.com/betasecond/KlingDemo.git
