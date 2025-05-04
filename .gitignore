@@ -33,6 +33,11 @@ Thumbs.db
 *.a
 *.out
 
+# Log files
+*.log
+log.txt
+
+
 # Python virtual environment
 venv/
 .env/
