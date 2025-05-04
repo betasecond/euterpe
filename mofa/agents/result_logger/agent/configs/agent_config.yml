@@ -1,0 +1,8 @@
+agent:
+  name: result-logger
+  description: "Collects and logs results from the workflow"
+  version: "0.1.0"
+  
+  # Result logger specific settings
+  log_dir: "workflow/logs"
+  generate_markdown_summary: true

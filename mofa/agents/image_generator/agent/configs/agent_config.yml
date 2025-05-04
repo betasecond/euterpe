@@ -1,0 +1,11 @@
+agent:
+  name: image-generator
+  description: "Generates images from keyframe data using KlingDemo API"
+  version: "0.1.0"
+  
+  # Image generator specific settings
+  kling_model_name: "kling-v1-5"
+  kling_timeout: 60
+  kling_max_retries: 3
+  default_aspect_ratio: "16:9"
+  output_dir: "workflow/outputs/images"

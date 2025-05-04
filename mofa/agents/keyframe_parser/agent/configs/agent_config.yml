@@ -1,0 +1,9 @@
+agent:
+  name: keyframe-parser
+  description: "Parses keyframe data from input files"
+  version: "0.1.0"
+  
+  # Keyframe parser specific settings
+  default_aspect_ratio: "16:9"
+  frame_id_prefix: "frame_"
+  default_frame_duration: 5

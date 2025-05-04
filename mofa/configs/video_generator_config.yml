@@ -1,0 +1,8 @@
+VIDEO_GENERATOR:
+  KLING_MODEL_NAME: "kling-v1"
+  KLING_TIMEOUT: 120
+  KLING_MAX_RETRIES: 3
+  DEFAULT_MODE: "std"
+  DEFAULT_DURATION: "5"
+  OUTPUT_DIR: "workflow/outputs/videos"
+  USE_DIFY: true

@@ -1,0 +1,13 @@
+agent:
+  name: music-generator
+  description: "Generates background music using Beatoven.ai API"
+  version: "0.1.0"
+  
+  # Music generator specific settings
+  default_duration: 180
+  default_format: "mp3"
+  default_filename: "background_music"
+  output_dir: "workflow/outputs/music"
+  polling_interval: 5
+  request_timeout: 30
+  download_timeout: 60

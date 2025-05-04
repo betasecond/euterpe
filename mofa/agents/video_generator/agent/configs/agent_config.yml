@@ -1,0 +1,13 @@
+agent:
+  name: video-generator
+  description: "Generates videos from images using KlingDemo API"
+  version: "0.1.0"
+  
+  # Video generator specific settings
+  kling_model_name: "kling-v1"
+  kling_timeout: 120
+  kling_max_retries: 3
+  default_mode: "std"
+  default_duration: "5"
+  output_dir: "workflow/outputs/videos"
+  use_dify: false
