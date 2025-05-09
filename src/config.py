@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 # Import the Pydantic settings from BeatovenDemo
-from beatoven_ai import settings as beatoven_settings
 from beatoven_ai.beatoven_ai.config import get_settings
 
 logger = logging.getLogger(__name__)
@@ -73,38 +72,67 @@ def load_kling_config(env_file: Optional[str] = None) -> Dict[str, Any]:
 def load_beatoven_config(env_file: Optional[str] = None) -> Dict[str, Any]:
     """
     Load BeatovenDemo configuration using the Pydantic settings system.
-    
+
     Args:
         env_file: Path to the .env file
-        
+
     Returns:
         Dictionary with BeatovenDemo configuration from the settings
     """
-    # Use the get_settings function to load settings from the specified env_file
-    if env_file:
-        custom_settings = get_settings(env_file)
-    else:
-        # Use the default settings from the library
-        custom_settings = beatoven_settings
-    
-    # Return a dictionary representation of the settings for backward compatibility
-    config = {
-        'api_key': custom_settings.API_KEY,
-        'api_url': custom_settings.API_URL,
-        'default_duration': custom_settings.DEFAULT_DURATION,
-        'default_format': custom_settings.DEFAULT_FORMAT,
-        'output_dir': custom_settings.OUTPUT_DIR,
-        'request_timeout': custom_settings.REQUEST_TIMEOUT,
-        'download_timeout': custom_settings.DOWNLOAD_TIMEOUT,
-        'polling_interval': custom_settings.POLLING_INTERVAL
-    }
-    
-    # Validate API key
-    if not config['api_key']:
-        logger.warning("BeatovenDemo API key not found. Music generation will not be available.")
-    
-    return config
+    # Import the get_settings function
+    from beatoven_ai import get_settings
 
+    try:
+        # Check if the env_file exists before attempting to use it
+        if env_file and Path(env_file).exists():
+            logger.info(f"Loading BeatovenDemo configuration from {env_file}")
+            # Use the provided env file path
+            custom_settings = get_settings(env_file)
+        else:
+            if env_file:
+                logger.warning(f"BeatovenDemo environment file {env_file} not found, using default settings")
+            else:
+                logger.info("Using default BeatovenDemo settings (no env file specified)")
+
+            # Create a settings instance without any env file
+            custom_settings = get_settings(None)
+
+        # Return a dictionary representation of the settings
+        config = {
+            'api_key': custom_settings.API_KEY,
+            'api_url': custom_settings.API_URL,
+            'default_duration': custom_settings.DEFAULT_DURATION,
+            'default_format': custom_settings.DEFAULT_FORMAT,
+            'output_dir': custom_settings.OUTPUT_DIR,
+            'request_timeout': custom_settings.REQUEST_TIMEOUT,
+            'download_timeout': custom_settings.DOWNLOAD_TIMEOUT,
+            'polling_interval': custom_settings.POLLING_INTERVAL
+        }
+
+        # Mask API key for logging
+        if config['api_key']:
+            masked_key = f"{config['api_key'][:4]}...{config['api_key'][-4:]}" if len(config['api_key']) > 8 else "****"
+            logger.info(f"Loaded BeatovenDemo API key: {masked_key}")
+        else:
+            logger.warning("BeatovenDemo API key not found. Music generation will not be available.")
+
+        logger.info(f"Using BeatovenDemo API URL: {config['api_url']}")
+
+        return config
+
+    except Exception as e:
+        logger.error(f"Failed to load BeatovenDemo configuration: {e}")
+        # Return a minimal configuration that will allow the application to continue
+        return {
+            'api_key': '',
+            'api_url': 'https://public-api.beatoven.ai/api/v1',
+            'default_duration': 180,
+            'default_format': 'mp3',
+            'output_dir': './outputs',
+            'request_timeout': 30,
+            'download_timeout': 60,
+            'polling_interval': 10
+        }
 def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Run an integrated workflow with KlingDemo, BeatovenDemo, and optional Dify")
