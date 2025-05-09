@@ -19,24 +19,26 @@ logger = logging.getLogger(__name__)
 
 class MusicGenerator:
     """Handles music generation using BeatovenDemo."""
-    
+
     def __init__(self, api_key: Optional[str] = None, api_url: Optional[str] = None, output_dir: Optional[Path] = None, env_file: Optional[str] = None):
         """
         Initialize the music generator with API credentials.
-        
+
         Args:
             api_key: Beatoven API key (overrides env_file settings)
             api_url: Beatoven API URL (overrides env_file settings)
             output_dir: Directory to save generated music files (overrides env_file settings)
             env_file: Path to environment file for settings
         """
-        # Load settings either from env_file or use defaults with overrides
-        if env_file:
+        # Load settings from env_file if provided
+        if env_file and Path(env_file).exists():
+            logger.info(f"Loading music generator settings from {env_file}")
             self.settings = get_settings(env_file)
         else:
-            self.settings = beatoven_ai.settings
-            
-        # Override settings with explicit parameters if provided
+            # Use an empty settings object without loading any env file
+            self.settings = get_settings(None)
+
+            # Override settings with explicit parameters if provided
         if api_key:
             self.settings.API_KEY = api_key
         if api_url:
@@ -44,14 +46,15 @@ class MusicGenerator:
         if output_dir:
             output_dir.mkdir(parents=True, exist_ok=True)
             self.settings.OUTPUT_DIR = str(output_dir)
-            
-        # Initialize client with our settings
+
+        # Initialize client with our settings and explicitly pass the same env_file
+        # This ensures the client uses the same configuration without searching for other .env files
         self.client = BeatovenClient(
-            api_key=self.settings.API_KEY
+            api_key=self.settings.API_KEY,
+            env_file=env_file
         )
-        
+
         logger.info("Initialized music generator with Beatoven settings")
-    
     async def generate(self, prompt: str, duration: int = None, 
                       format: str = None, filename: str = "background_music") -> Optional[Path]:
         """
